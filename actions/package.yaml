@@ -17,6 +17,6 @@ dependencies:
   - pip=23.2.1
   - robocorp-truststore=0.8.0
   pypi:
-  - robocorp-actions=0.1.0
-  - faker=24.4.0
+  - robocorp-actions=0.2.0
+  - faker=24.9.0
 

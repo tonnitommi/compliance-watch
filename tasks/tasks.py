@@ -42,7 +42,7 @@ def _get_new_rules():
     # -----
     # DEBUG - SET THE TIME WHERE I WANT
     # -----
-    reference_time = datetime.strptime("2024-03-15", '%Y-%m-%d')
+    reference_time = datetime.strptime("2024-03-20", '%Y-%m-%d')
     print(reference_time)
 
     # Robocorp and some basic things up
@@ -133,7 +133,7 @@ def compliance_checker():
     print(rules)
 
     cookie = {"opengpts_user_id": "89759853-0479-450f-9524-26d68ed198da"}
-    asst_id = "d688dbc0-682a-4734-b4f2-1b6d99d1c039"
+    asst_id = "2510a6ae-9a67-4c84-9b52-3945a00e7c87"
     base_url = "http://127.0.0.1:8100"
 
     for rule in rules:
@@ -159,7 +159,7 @@ def compliance_checker():
             })
         }
 
-        response = requests.post(f'{base_url}/ingest', files=files, data=config, headers={'accept': 'application/json'})
+        response = requests.post(f'{base_url}/ingest', files=files, cookies=cookie, data=config, headers={'accept': 'application/json'})
 
         if response.status_code == 200:
             print("File upload successful!")
@@ -168,27 +168,43 @@ def compliance_checker():
             print(response.text)
 
         # Add AI messages to prime the thread
-        requests.post(
-            f'{base_url}/threads/{thread_id}/messages', 
-            cookies=cookie, json={
-                "messages": [{
-                    "content": rule[1],
-                    "type": "ai",
-                },
-                {
-                    "content": "Ask me anything you'd like to know more!",
-                    "type": "ai",
-                }
-                ]
-            }
-        ).content
+        # requests.post(
+        #    f'{base_url}/threads/{thread_id}/messages', 
+        #    cookies=cookie, json={
+        #        "messages": [{
+        #            "content": rule[1],
+        #            "type": "ai",
+        #        },
+        #        {
+        #            "content": "Ask me anything you'd like to know more!",
+        #            "type": "ai",
+        #        }
+        #        ]
+        #    }
+        #).content
 
         # Run the thread
         resp1 = requests.post(f'{base_url}/runs', cookies=cookie, json={
             "assistant_id": asst_id,
             "thread_id": thread_id,
-            "input": []
+            "input": [{
+                    "content": rule[1],
+                    "type": "ai",
+                },
+                {
+                    "content": "Ask me anything you'd like to know more!",
+                    "type": "human",
+                }
+                ]
             }).content
+
+        # Get thread content
+        messages = requests.get(
+            f'{base_url}/threads/{thread_id}/messages', 
+            cookies=cookie
+        ).content
+
+        print(f"\n\nMESSAGES:\n{messages}n\n")
 
         # notif = Notifier()
         # slack_secrets = vault.get_secret("Slack")

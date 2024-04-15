@@ -26,6 +26,6 @@ def search_crm(term: str) -> str:
         response = f"For term <{term}> following matches were found:\n\n"
 
         for i in range(how_many):
-            response += f"{fake.name} is a contact at a company {term}\n"    
+            response += f"{fake.name()} is a contact at a company {term}\n"    
 
         return response
