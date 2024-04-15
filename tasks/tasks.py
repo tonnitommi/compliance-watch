@@ -42,7 +42,7 @@ def _get_new_rules():
     # -----
     # DEBUG - SET THE TIME WHERE I WANT
     # -----
-    reference_time = datetime.strptime("2024-03-20", '%Y-%m-%d')
+    reference_time = datetime.strptime("2024-04-10", '%Y-%m-%d')
     print(reference_time)
 
     # Robocorp and some basic things up
@@ -133,7 +133,7 @@ def compliance_checker():
     print(rules)
 
     cookie = {"opengpts_user_id": "89759853-0479-450f-9524-26d68ed198da"}
-    asst_id = "2510a6ae-9a67-4c84-9b52-3945a00e7c87"
+    asst_id = "5c96c978-aae4-490a-809f-898f12ee3e99"
     base_url = "http://127.0.0.1:8100"
 
     for rule in rules:
@@ -191,10 +191,6 @@ def compliance_checker():
                     "content": rule[1],
                     "type": "ai",
                 },
-                {
-                    "content": "Ask me anything you'd like to know more!",
-                    "type": "human",
-                }
                 ]
             }).content
 
@@ -215,6 +211,8 @@ def compliance_checker():
         to = ["tommi@robocorp.com"]
         subject = f"LEGAL COMPLIANCE NEWS: New BIS Rule published: {rule[0]} "
 
+        formatted_rule_text = rule[1].replace('\n\n', '<br><br>').replace('\n', '<br>')
+
         # HTML email content
         html = f"""\
         <html>
@@ -225,7 +223,7 @@ def compliance_checker():
             </p>
             <p>
             Summary:<br>
-            {rule[1]}
+            {formatted_rule_text}
             </p>
         </body>
         </html>
