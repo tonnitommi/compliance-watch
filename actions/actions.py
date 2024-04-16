@@ -7,14 +7,34 @@ from markdown import markdown
 
 fake = Faker()
 
+def _doc_template(id: str, date: str, link: str, content: str) -> str:
+    text = f"""ACME CORP LEGAL BULLETIN
+
+Regarding US Federal Notice: {id}
+Effectice date: {date}
+
+{content}
+
+For any additional information, please contact legal@acme.corp.
+
+Warm regards,
+[person name]
+[role]
+[contact details]
+"""
+    return text
+
 @action
-def create_bulletin(title: str, content: str) -> str:
+def create_bulletin(title: str, id: str, date: str, link: str, content: str) -> str:
     """
     Creates a legal bulletin file using the content and the predetermined template and returns a link to the doc.
     
     Args:
         title (str): Title of the legal bulleting file. Should always include a unique identifier of the bulletin.
-        content (str): Content of the legal bulletin to be placed in the template.
+        id (str): A unique identifier of the rule or case that this bulleting covers. For example '89 FR 25503'.
+        date (str): The effective date of the rule in question.
+        link (str): A link to the original notice or rule.
+        content (str): Content of the legal bulletin to be placed in the template. The content must always contain clear instructions on the action to be taken.
         
     Returns:
         str: link to the newly created document file in Google Drive
@@ -36,13 +56,15 @@ def create_bulletin(title: str, content: str) -> str:
     doc = drive_service.files().create(body=file_metadata, fields='id, webViewLink').execute()
     document_id = doc.get('id')
 
+    doc_content = _doc_template(id, date, link, content)
+
     # Simple text insertion
     requests = [{
         'insertText': {
             'location': {
                 'index': 1,  # Index 1 is the beginning of the document
             },
-            'text': content
+            'text': doc_content
         }
     }]
 

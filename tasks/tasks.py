@@ -42,7 +42,7 @@ def _get_new_rules():
     # -----
     # DEBUG - SET THE TIME WHERE I WANT
     # -----
-    reference_time = datetime.strptime("2024-04-10", '%Y-%m-%d')
+    reference_time = datetime.strptime("2024-04-01", '%Y-%m-%d')
     print(reference_time)
 
     # Robocorp and some basic things up
@@ -209,7 +209,7 @@ def compliance_checker():
         # Email properties
         sent_from = gmail_credentials["email"]
         to = ["tommi@robocorp.com"]
-        subject = f"LEGAL COMPLIANCE NEWS: New BIS Rule published: {rule[0]} "
+        subject = f"Compliance Watch: New BIS Rule published: {rule[0]} "
 
         formatted_rule_text = rule[1].replace('\n\n', '<br><br>').replace('\n', '<br>')
 
